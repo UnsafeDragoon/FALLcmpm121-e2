@@ -12,21 +12,23 @@ function update() {
   resetHUD(values);
 }
 
-function calculate(){
+function calculate() {
   const productRate: number = currProducers * 3;
   const crewSize: number = 6;
   const netGain: number = productRate - crewSize;
 
-  return {productRate, crewSize, netGain};
+  return { productRate, crewSize, netGain };
 }
 
-function resetHUD(values: {productRate: number, crewSize: number, netGain: number}){
+function resetHUD(
+  values: { productRate: number; crewSize: number; netGain: number },
+) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   createVisual(values.productRate, values.crewSize);
   updateText(values.productRate, values.crewSize, values.netGain);
 }
 
-function createVisual(productRate: number, crewSize: number){
+function createVisual(productRate: number, crewSize: number) {
   for (let i = 0; i < 6; i++) {
     ctx.fillStyle = i < currProducers ? "#27766b" : "#c9d2c9";
     ctx.fillRect(18 + i * 45, 16, 36, 36);
@@ -46,7 +48,7 @@ function createVisual(productRate: number, crewSize: number){
   ctx.fillRect(18, 162, crewSize * 14, 20);
 }
 
-function updateText(productRate: number, crewSize: number, netGain: number){
+function updateText(productRate: number, crewSize: number, netGain: number) {
   readout.textContent =
     `Assigned: ${currProducers}/6 · Production: ${productRate} · Consumption: ${crewSize} · Balance: ${
       netGain > 0 ? "+" : ""
