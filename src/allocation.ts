@@ -36,16 +36,36 @@ function createVisual(productRate: number, crewSize: number) {
     ctx.font = "16px system-ui";
     ctx.fillText(String(i + 1), 31 + i * 45, 40);
   }
-  ctx.fillStyle = "#233e43";
+
   ctx.font = "14px system-ui";
   ctx.fillText(`Producers: ${currProducers} / 6`, 18, 76);
-  ctx.fillText(`Production: ${productRate}`, 18, 102);
-  ctx.fillStyle = "#27766b";
-  ctx.fillRect(18, 110, productRate * 14, 20);
+
+  const rows = [
+    {
+      label: "Production:",
+      data: productRate,
+      color: "#27766b",
+    },
+    {
+      label: "Consumption:",
+      data: crewSize,
+      color: "#a44d23",
+    },
+  ];
+
+  rows.forEach((row, index) => {
+    createRow(row, index);
+  });
+}
+
+function createRow(
+  rowData: { label: string; data: number; color: string },
+  index: number,
+) {
   ctx.fillStyle = "#233e43";
-  ctx.fillText(`Consumption: ${crewSize}`, 18, 154);
-  ctx.fillStyle = "#a44d23";
-  ctx.fillRect(18, 162, crewSize * 14, 20);
+  ctx.fillText(`${rowData.label} ${rowData.data}`, 18, 102 + (52 * index));
+  ctx.fillStyle = rowData.color;
+  ctx.fillRect(18, 110 + (52 * index), rowData.data * 14, 20);
 }
 
 function updateText(productRate: number, crewSize: number, netGain: number) {
