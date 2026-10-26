@@ -8,6 +8,12 @@ let x = 2;
 let y = 2;
 let tableIndex = 0;
 
+const queueStatus = document.querySelector<HTMLParagraphElement>(
+  "#rover-queue-status",
+)!;
+
+const cmdQueue: Command[] = [];
+
 const directionTable = [
   {
     name: "Down",
@@ -53,6 +59,17 @@ const rightCmd: Command = {
   },
 };
 
+function updateQueueText() {
+  let baseText = "Empty · Nothing in queue";
+  if (cmdQueue.length > 0) {
+    baseText = "";
+    cmdQueue.forEach((command) => {
+      baseText += `Move to: ${command.moveTo}\n`;
+    });
+  }
+  queueStatus.innerText = baseText;
+}
+
 function drawRover() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = "#718881";
@@ -78,15 +95,43 @@ function drawRover() {
 }
 
 document.querySelector<HTMLButtonElement>("#rover-forward")!.onclick = () => {
-  runCmd(forwardCmd);
+  // runCmd(forwardCmd);
+  cmdQueue.push(forwardCmd);
+  updateQueueText();
 };
 document.querySelector<HTMLButtonElement>("#rover-right")!.onclick = () => {
-  runCmd(rightCmd);
+  cmdQueue.push(rightCmd);
+  updateQueueText();
 };
 document.querySelector<HTMLButtonElement>("#rover-reset")!.onclick = () => {
   x = 2;
   y = 2;
   tableIndex = 0;
+  clearQueue();
   drawRover();
+  updateQueueText();
 };
+
+document.querySelector<HTMLButtonElement>("#rover-run")!.onclick = () => {
+  runQueue();
+  updateQueueText();
+};
+document.querySelector<HTMLButtonElement>("#rover-clear")!.onclick = () => {
+  clearQueue();
+  updateQueueText();
+};
+
+function runQueue() {
+  if (cmdQueue.length > 0) {
+    const command: Command = cmdQueue.shift()!;
+    runCmd(command);
+    updateQueueText();
+    setTimeout(runQueue, 1000);
+  }
+}
+
+function clearQueue() {
+  cmdQueue.length = 0;
+}
+
 drawRover();
